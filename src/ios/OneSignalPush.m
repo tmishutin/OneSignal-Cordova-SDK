@@ -80,7 +80,7 @@ void processNotificationReceived(OSNotification* _notif) {
     }
 
     if(!jsonError) {
-        successCallback(notficationReceivedCallbackId, json);
+        successCallback(notificationReceivedCallbackId, json);
         notification = nil;
     }
 }
