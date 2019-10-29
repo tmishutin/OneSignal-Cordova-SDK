@@ -64,14 +64,23 @@ void failureCallback(NSString* callbackId, NSDictionary* data) {
 }
 
 void processNotificationReceived(OSNotification* _notif) {
+    
     NSString * data = [_notif stringify];
     NSError *jsonError;
     NSData *objectData = [data dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
                                                          options:NSJSONReadingMutableContainers
                                                            error:&jsonError];
+
+    if ([json[@"payload"] length] == 0 && [json[@"payload"][@"title"] length] == 0 && [json[@"payload"][@"body"] length] == 0) {
+        [[UNUserNotificationCenter currentNotificationCenter]
+         removeDeliveredNotificationsWithIdentifiers:@[
+                                                       [NSString stringWithFormat:@"%@",json[@"payload"][@"additionalData"][@"collapseId"]]
+                                                       ]];
+    }
+
     if(!jsonError) {
-        successCallback(notificationReceivedCallbackId, json);
+        successCallback(notficationReceivedCallbackId, json);
         notification = nil;
     }
 }
