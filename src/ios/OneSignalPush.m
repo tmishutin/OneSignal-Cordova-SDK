@@ -72,14 +72,14 @@ void processNotificationReceived(OSNotification* _notif) {
                                                          options:NSJSONReadingMutableContainers
                                                            error:&jsonError];
 
-    if ([json[@"payload"] length] == 0 && [json[@"payload"][@"title"] length] == 0 && [json[@"payload"][@"body"] length] == 0) {
-        [[UNUserNotificationCenter currentNotificationCenter]
-         removeDeliveredNotificationsWithIdentifiers:@[
-                                                       [NSString stringWithFormat:@"%@",json[@"payload"][@"additionalData"][@"collapseId"]]
-                                                       ]];
-    }
-
     if(!jsonError) {
+        if ([json[@"payload"][@"title"] length] == 0 && [json[@"payload"][@"body"] length] == 0) {
+            [[UNUserNotificationCenter currentNotificationCenter]
+             removeDeliveredNotificationsWithIdentifiers:@[
+                                                           [NSString stringWithFormat:@"%@",json[@"payload"][@"additionalData"][@"collapseId"]]
+                                                           ]];
+        }
+
         successCallback(notificationReceivedCallbackId, json);
         notification = nil;
     }
